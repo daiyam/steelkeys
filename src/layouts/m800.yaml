@@ -1,0 +1,130 @@
+keys:
+  a:
+    keycode: 0x04
+    region: main
+  b:
+    keycode: 0x05
+    region: main
+  c:
+    keycode: 0x06
+    region: main
+  d:
+    keycode: 0x07
+    region: main
+  e:
+    keycode: 0x08
+    region: main
+  f:
+    keycode: 0x09
+    region: main
+  g:
+    keycode: 0x0a
+    region: main
+  h:
+    keycode: 0x0b
+    region: main
+  i:
+    keycode: 0x0c
+    region: main
+  j:
+    keycode: 0x0d
+    region: main
+  k:
+    keycode: 0x0e
+    region: main
+  l:
+    keycode: 0x0f
+    region: main
+  m:
+    keycode: 0x10
+    region: main
+  n:
+    keycode: 0x11
+    region: main
+  o:
+    keycode: 0x12
+    region: main
+  p:
+    keycode: 0x13
+    region: main
+  q:
+    keycode: 0x14
+    region: main
+  r:
+    keycode: 0x15
+    region: main
+  s:
+    keycode: 0x16
+    region: main
+  t:
+    keycode: 0x17
+    region: main
+  u:
+    keycode: 0x18
+    region: main
+  v:
+    keycode: 0x19
+    region: main
+  w:
+    keycode: 0x1a
+    region: main
+  x:
+    keycode: 0x1b
+    region: main
+  y:
+    keycode: 0x1c
+    region: main
+  z:
+    keycode: 0x1d
+    region: main
+  '1':
+    keycode: 0x1e
+    region: main
+  '2':
+    keycode: 0x1f
+    region: main
+  '3':
+    keycode: 0x20
+    region: main
+  '4':
+    keycode: 0x21
+    region: main
+  '5':
+    keycode: 0x22
+    region: main
+  '6':
+    keycode: 0x23
+    region: main
+  '7':
+    keycode: 0x24
+    region: main
+  '8':
+    keycode: 0x25
+    region: main
+  '9':
+    keycode: 0x26
+    region: main
+  '0':
+    keycode: 0x27
+    region: main
+  logo:
+    keycode: 0x00
+    region: utility
+groups:
+  all:
+  - a
+  - logo
+  main:
+  - a
+regions:
+  main:
+    code: 0x2a
+    # prefix: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00]
+    repeat: 0
+    minKeys: 0
+  utility:
+    code: 0x18
+    # prefix: [0x00, 0x00, 0x00, 0x2c, 0x01, 0x00, 0x01, 0x00]
+    repeat: 24
+    minKeys: 42
+presets: m800

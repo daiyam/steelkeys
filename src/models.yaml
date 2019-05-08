@@ -1,0 +1,5 @@
+m800:
+  id:
+    vendor: 0x1038
+    product: 0x1600
+  layout: m800
