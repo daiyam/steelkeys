@@ -1,3 +1,4 @@
+maxKeys: 42
 keys:
   a:
     keycode: 0x04
@@ -107,24 +108,462 @@ keys:
   '0':
     keycode: 0x27
     region: main
+  return:
+     keycode: 0x28
+     region: utility
+  escape:
+     keycode: 0x29
+     region: utility
+  backspace:
+     keycode: 0x2a
+     region: utility
+  tab:
+     keycode: 0x2b
+     region: utility
+  minus:
+     keycode: 0x2d
+     region: utility
+  equal:
+     keycode: 0x2e
+     region: utility
+  left-bracket:
+     keycode: 0x2f
+     region: utility
+  right-bracket:
+     keycode: 0x30
+     region: utility
+  backslash:
+     keycode: 0x31
+     region: utility
+  semicolon:
+     keycode: 0x33
+     region: utility
+  apostrophe:
+     keycode: 0x34
+     region: utility
+  backquote:
+     keycode: 0x35
+     region: utility
+  comma:
+     keycode: 0x36
+     region: utility
+  dot:
+     keycode: 0x37
+     region: utility
+  slash:
+     keycode: 0x38
+     region: utility
+  capslock:
+     keycode: 0x39
+     region: utility
+  left-ctrl:
+     keycode: 0xe0
+     region: utility
+  left-shift:
+     keycode: 0xe1
+     region: utility
+  left-alt:
+     keycode: 0xe2
+     region: utility
+  left-meta:
+     keycode: 0xe3
+     region: utility
+  right-ctrl:
+     keycode: 0xe4
+     region: utility
+  right-shift:
+     keycode: 0xe5
+     region: utility
+  right-alt:
+     keycode: 0xe6
+     region: utility
+  right-meta:
+     keycode: 0xef
+     region: utility
+  win-menu:
+     keycode: 0x65
+     region: utility
+  f1:
+     keycode: 0x3a
+     region: numpad
+  f2:
+     keycode: 0x3b
+     region: numpad
+  f3:
+     keycode: 0x3c
+     region: numpad
+  f4:
+     keycode: 0x3d
+     region: numpad
+  f5:
+     keycode: 0x3e
+     region: numpad
+  f6:
+     keycode: 0x3f
+     region: numpad
+  f7:
+     keycode: 0x40
+     region: numpad
+  f8:
+     keycode: 0x41
+     region: numpad
+  f9:
+     keycode: 0x42
+     region: numpad
+  f10:
+     keycode: 0x43
+     region: numpad
+  f11:
+     keycode: 0x44
+     region: numpad
+  f12:
+     keycode: 0x45
+     region: numpad
+  print-screen:
+     keycode: 0x46
+     region: main
+  scroll-lock:
+     keycode: 0x47
+     region: main
+  pause:
+     keycode: 0x48
+     region: main
+  insert:
+     keycode: 0x49
+     region: main
+  home:
+     keycode: 0x4a
+     region: main
+  page-up:
+     keycode: 0x4b
+     region: main
+  delete:
+     keycode: 0x4c
+     region: main
+  end:
+     keycode: 0x4d
+     region: main
+  page-down:
+     keycode: 0x4e
+     region: main
+  right:
+     keycode: 0x4f
+     region: main
+  left:
+     keycode: 0x50
+     region: main
+  down:
+     keycode: 0x51
+     region: main
+  up:
+     keycode: 0x52
+     region: main
+  keypad-num-lock:
+     keycode: 0x53
+     region: numpad
+  keypad-slash:
+     keycode: 0x54
+     region: numpad
+  keypad-asterisk:
+     keycode: 0x55
+     region: numpad
+  keypad-minus:
+     keycode: 0x56
+     region: numpad
+  keypad-plus:
+     keycode: 0x57
+     region: numpad
+  keypad-enter:
+     keycode: 0x58
+     region: numpad
+  keypad-1:
+     keycode: 0x59
+     region: numpad
+  keypad-2:
+     keycode: 0x5a
+     region: numpad
+  keypad-3:
+     keycode: 0x5b
+     region: numpad
+  keypad-4:
+     keycode: 0x5c
+     region: numpad
+  keypad-5:
+     keycode: 0x5d
+     region: numpad
+  keypad-6:
+     keycode: 0x5e
+     region: numpad
+  keypad-7:
+     keycode: 0x5f
+     region: numpad
+  keypad-8:
+     keycode: 0x60
+     region: numpad
+  keypad-9:
+     keycode: 0x61
+     region: numpad
+  keypad-0:
+     keycode: 0x62
+     region: numpad
+  keypad-dot:
+     keycode: 0x63
+     region: numpad
+  m0:
+     keycode: 0xe8
+     region: main
+  m1:
+     keycode: 0xe9
+     region: main
+  m2:
+     keycode: 0xea
+     region: main
+  m3:
+     keycode: 0xeb
+     region: main
+  m4:
+     keycode: 0xec
+     region: main
+  m5:
+     keycode: 0xed
+     region: main
   logo:
     keycode: 0x00
     region: utility
 groups:
   all:
   - a
+  - b
+  - c
+  - d
+  - e
+  - f
+  - g
+  - h
+  - i
+  - j
+  - k
+  - l
+  - m
+  - n
+  - o
+  - p
+  - q
+  - r
+  - s
+  - t
+  - u
+  - v
+  - w
+  - x
+  - y
+  - z
+  - '1'
+  - '2'
+  - '3'
+  - '4'
+  - '5'
+  - '6'
+  - '7'
+  - '8'
+  - '9'
+  - '0'
+  - return
+  - escape
+  - backspace
+  - tab
+  - minus
+  - equal
+  - left-bracket
+  - right-bracket
+  - backslash
+  - semicolon
+  - apostrophe
+  - backquote
+  - comma
+  - dot
+  - slash
+  - capslock
+  - left-ctrl
+  - left-shift
+  - left-alt
+  - left-meta
+  - right-ctrl
+  - right-shift
+  - right-alt
+  - right-meta
+  - win-menu
+  - f1
+  - f2
+  - f3
+  - f4
+  - f5
+  - f6
+  - f7
+  - f8
+  - f9
+  - f10
+  - f11
+  - f12
+  - print-screen
+  - scroll-lock
+  - pause
+  - insert
+  - home
+  - page-up
+  - delete
+  - end
+  - page-down
+  - right
+  - left
+  - down
+  - up
+  - keypad-num-lock
+  - keypad-slash
+  - keypad-asterisk
+  - keypad-minus
+  - keypad-plus
+  - keypad-enter
+  - keypad-1
+  - keypad-2
+  - keypad-3
+  - keypad-4
+  - keypad-5
+  - keypad-6
+  - keypad-7
+  - keypad-8
+  - keypad-9
+  - keypad-0
+  - keypad-dot
+  - m0
+  - m1
+  - m2
+  - m3
+  - m4
+  - m5
   - logo
+  all-macro-keys:
+  - m0
+  - m1
+  - m2
+  - m3
+  - m4
+  - m5
+  arrows:
+  - right
+  - left
+  - down
+  - up
+  function-keys:
+  - f1
+  - f2
+  - f3
+  - f4
+  - f5
+  - f6
+  - f7
+  - f8
+  - f9
+  - f10
+  - f11
+  - f12
+  keypad:
+  - keypad-num-lock
+  - keypad-slash
+  - keypad-asterisk
+  - keypad-minus
+  - keypad-plus
+  - keypad-enter
+  - keypad-1
+  - keypad-2
+  - keypad-3
+  - keypad-4
+  - keypad-5
+  - keypad-6
+  - keypad-7
+  - keypad-8
+  - keypad-9
+  - keypad-0
+  - keypad-dot
+  macro-keys:
+  - m1
+  - m2
+  - m3
+  - m4
+  - m5
   main:
   - a
+  - b
+  - c
+  - d
+  - e
+  - f
+  - g
+  - h
+  - i
+  - j
+  - k
+  - l
+  - m
+  - n
+  - o
+  - p
+  - q
+  - r
+  - s
+  - t
+  - u
+  - v
+  - w
+  - x
+  - y
+  - z
+  - '1'
+  - '2'
+  - '3'
+  - '4'
+  - '5'
+  - '6'
+  - '7'
+  - '8'
+  - '9'
+  - '0'
+  - return
+  - escape
+  - backspace
+  - tab
+  - minus
+  - equal
+  - left-bracket
+  - right-bracket
+  - backslash
+  - semicolon
+  - apostrophe
+  - backquote
+  - comma
+  - dot
+  - slash
+  - capslock
+  - left-ctrl
+  - left-shift
+  - left-alt
+  - left-meta
+  - right-ctrl
+  - right-shift
+  - right-alt
+  - right-meta
+  - win-menu
 regions:
   main:
     code: 0x2a
-    # prefix: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00]
+    repeat: 0
+    minKeys: 0
+  numpad:
+    code: 0x24
     repeat: 0
     minKeys: 0
   utility:
     code: 0x18
-    # prefix: [0x00, 0x00, 0x00, 0x2c, 0x01, 0x00, 0x01, 0x00]
     repeat: 24
     minKeys: 42
 presets: m800

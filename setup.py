@@ -8,7 +8,7 @@ setup(
 	version='0.1',
 	description='Configuration tool for SteelSeries RGB keyboards.',
 	long_description=open(join(dirname(__file__), 'README.md')).read(),
-	url='',
+	url='https://github.com/daiyam/steelkeys',
 	author='Baptiste Augrain',
 	author_email='daiyam@zokugun.org',
 	license='MIT',

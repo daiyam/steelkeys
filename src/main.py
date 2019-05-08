@@ -3,12 +3,12 @@
 import argparse
 import json
 import sys
-from steelkeys.keyboard import Keyboard, HIDLibraryError, HIDNotFoundError, HIDOpenError, UnknownPresetError
+from steelkeys.keyboard import Keyboard, ConfigError, HIDLibraryError, HIDNotFoundError, HIDOpenError, UnknownPresetError
 
 VERSION = "0.1"
 
 def main():
-	parser = argparse.ArgumentParser(description='Configuration tool for SteelSeries RGB keyboards.')
+	parser = argparse.ArgumentParser(description='configuration tool for SteelSeries RGB keyboards.')
 	parser.add_argument('-v', '--version', action='store_true', help='Prints version and exits.')
 	parser.add_argument('--list-models', action='store_true', help='List available keyboard models.')
 	parser.add_argument('-m', '--model', action='store', help='Set keyboard model (see --list-models).')
@@ -21,7 +21,7 @@ def main():
 	args = parser.parse_args()
 
 	if args.version:
-		print("Version : %s" % VERSION)
+		print("Version: %s" % VERSION)
 
 	elif args.list_models:
 		print("Available keyboard models are :")

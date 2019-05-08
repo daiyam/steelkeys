@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
-import keyboard
+# Activate the backlight one key at a time.
 
-MODEL = 'm800'
+import keyboard
+from time import sleep
+
+MODEL = 'M800'
 COLOR = 'ffffff'
+DELAY = 0.1
 
 from steelkeys.keyboard import Keyboard
 
@@ -15,10 +19,19 @@ except:
 	print('Can not access keyboard')
 	sys.exit(1)
 
+kb.disable()
+
+print('Press space to start')
+
+keyboard.wait('space')
+
+
 for key in kb.listKeys():
 	print(key)
 
-	kb.pushConfig({'key': key, 'color': COLOR})
+	kb.pushConfig({key: {'color': COLOR}})
+
+	sleep(DELAY)
 
 	print('Press space to continue')
 

@@ -7,6 +7,7 @@ from steelkeys.hidapi_types import set_hidapi_types
 
 import binascii
 
+BLACK = [0, 0, 0]
 DELAY = 0.01
 
 class ConfigError(Exception):
@@ -30,12 +31,22 @@ class UnknownModelError(Exception):
 class UnknownPresetError(Exception):
 	pass
 
+def parseColor(color): # {{{
+	# Color in HTML notation
+	if not re.fullmatch('^[0-9a-f]{6}$', color):
+		raise ConfigError('%s is not a valid color' % color)
+
+	return [int(color[i:i+2], 16) for i in [0, 2, 4]]
+# }}}
+
 class Keyboard:
 
-	def __init__(self, model):
+	def __init__(self, model): # {{{
 
 		path = os.path.join(os.path.dirname(__file__), 'models.yaml')
 		models = yaml.load(open(path))
+
+		model = model.lower()
 
 		if not model in models:
 			raise UnknownModelError(model)
@@ -50,8 +61,9 @@ class Keyboard:
 			self._presets = yaml.load(open(path))
 		else:
 			self._presets = {}
+	# }}}
 
-	def disable(self):
+	def disable(self): # {{{
 
 		regions = {}
 
@@ -61,26 +73,25 @@ class Keyboard:
 			if not region in regions:
 				regions[region] = []
 
-			regions[region].append(value['keycode'])
+			regions[region].append((value['keycode'], BLACK))
 
-		black = [0, 0, 0]
-
-		for region, keycodes in regions.items():
-			data = dict(zip(keycodes, [black] * len(keycodes)))
-
-			self.sendFeatureReport(self.makePacket(region, data))
+		for region, data in regions.items():
+			self.__sendFeatureReport(self.__makePackets(region, data))
 
 		self.refresh()
+	# }}}
 
-	def listKeys(self):
+	def listKeys(self): # {{{
 
 		return self._layout['keys'].keys()
+	# }}}
 
-	def listPresetKeys(self):
+	def listPresetKeys(self): # {{{
 
 		return self._presets.keys()
+	# }}}
 
-	def makePacket(self, region, data):
+	def __makePacket(self, region, data): # {{{
 		#print(region)
 		#print(data)
 
@@ -89,7 +100,7 @@ class Keyboard:
 		# prefix = self._layout['regions'][region]['prefix']
 
 		k = 0
-		for keycode, rgb in data.items():
+		for (keycode, rgb) in data:
 
 			#fragment = rgb + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, keycode]
 			fragment = rgb + [0x00, 0x00, 0x00, 0x2c, 0x01, 0x00, 0x01, 0x00, keycode]
@@ -111,14 +122,36 @@ class Keyboard:
 				packet += fragment
 				k += 1
 
-		#packet += ([0x00] * 6)
-		packet += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x39]
+		packet += ([0x00] * 6)
+		#packet += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x39]
 
 		#print(binascii.hexlify(bytearray(packet)))
 
 		return packet
+	# }}}
 
-	def open(self):
+	def __makePackets(self, region, data): # {{{
+
+		l = len(data)
+		maxKeys = self._layout['maxKeys']
+
+		if l > maxKeys:
+			packets = []
+			i = 0
+
+			while i < l:
+				j = i + maxKeys - 1
+
+				packets.append(self.__makePacket(region, data[i:j]))
+
+				i += maxKeys
+
+			return packets
+		else:
+			return [self.__makePacket(region, data)]
+	# }}}
+
+	def open(self): # {{{
 
 		# Locating HIDAPI library
 		s = os.popen('ldconfig -p').read()
@@ -147,68 +180,70 @@ class Keyboard:
 
 		if self._device is None:
 			raise HIDOpenError
+	# }}}
 
-	def prepareConfig(self, config, regions):
+	def __prepareGroup(self, name, data, regions): # {{{
 
-		print(config)
+		for key in self._layout['groups'][name]:
+			self.__prepareKey(key, data, regions)
+	# }}}
 
-		if not config['key'] in self._layout['keys']:
-			raise ConfigError('%s is not a valid keycode.' % config['key'])
+	def __prepareKey(self, keycode, data, regions): # {{{
 
-		# Color in HTML notation
-		if not re.fullmatch("^[0-9a-f]{6}$", config['color']):
-			raise ConfigError("%s is not a valid color" % config['color'])
-
-		key = self._layout['keys'][config['key']]
+		key = self._layout['keys'][keycode]
 
 		region = key['region']
 
 		if not region in regions:
-			regions[region] = {}
+			regions[region] = []
 
-		regions[region][key['keycode']] = [int(config['color'][i:i+2], 16) for i in [0, 2, 4]]
+		regions[region].append((key['keycode'], parseColor(data['color'])))
+	# }}}
 
-	def pushConfig(self, config):
+	def pushConfig(self, config): # {{{
 
 		regions = {}
 
-		if isinstance(config, list):
-			for c in config:
-				self.prepareConfig(c, regions)
-
-		elif isinstance(config, dict):
-			self.prepareConfig(config, regions)
+		for key, data in config.items():
+			if key in self._layout['keys']:
+				self.__prepareKey(key, data, regions)
+			elif key in self._layout['groups']:
+				self.__prepareGroup(key, data, regions)
 
 		for region, data in regions.items():
-			self.sendFeatureReport(self.makePacket(region, data))
+			self.__sendFeatureReport(self.__makePackets(region, data))
 
 		self.refresh()
+	# }}}
 
-	def pushPreset(self, preset):
+	def pushPreset(self, preset): # {{{
 
 		if not preset in self._presets:
 			raise UnknownPresetError(preset)
 
-		for data in self._presets[preset]:
-			self.sendFeatureReport(bytearray.fromhex(data))
+		self.__sendFeatureReport([bytearray.fromhex(data) for data in self._presets[preset]])
 
 		self.refresh()
+	# }}}
 
-	def refresh(self):
+	def refresh(self): # {{{
 
-		self.sendOutputReport([0x09] + [0x00] * 63)
+		self.__sendOutputReport([0x09] + [0x00] * 63)
+	# }}}
 
-	def sendFeatureReport(self, data):
+	def __sendFeatureReport(self, packets): # {{{
 
-		ret = self._hidapi.hid_send_feature_report(self._device, bytes(data), len(data))
+		for data in packets:
+			ret = self._hidapi.hid_send_feature_report(self._device, bytes(data), len(data))
 
-		# The RGB controller derps if commands are sent too fast.
-		sleep(DELAY)
+			if ret == -1 or ret != len(data):
+				raise HIDSendError("HIDAPI returned error upon sending feature report to keyboard.")
 
-		if ret == -1 or ret != len(data):
-			raise HIDSendError("HIDAPI returned error upon sending feature report to keyboard.")
+			# The RGB controller derps if commands are sent too fast.
+			sleep(DELAY)
+	# }}}
 
-	def sendOutputReport(self, data):
+	def __sendOutputReport(self, data): # {{{
 
 		ret = self._hidapi.hid_write(self._device, bytes(data), len(data))
 
@@ -217,3 +252,4 @@ class Keyboard:
 
 		if ret == -1 or ret != len(data):
 			raise HIDSendError("HIDAPI returned error upon sending output report to keyboard.")
+	# }}}
