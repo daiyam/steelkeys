@@ -1,4 +1,3 @@
-maxKeys: 42
 keys:
   a:
     keycode: 0x04
@@ -183,6 +182,7 @@ keys:
   win-menu:
      keycode: 0x65
      region: utility
+     solo: 1
   f1:
      keycode: 0x3a
      region: numpad
@@ -330,6 +330,7 @@ keys:
   logo:
     keycode: 0x00
     region: utility
+    solo: 24
 groups:
   all:
   - a
@@ -529,7 +530,6 @@ groups:
   - '9'
   - '0'
   - return
-  - escape
   - backspace
   - tab
   - minus
@@ -556,14 +556,8 @@ groups:
 regions:
   main:
     code: 0x2a
-    repeat: 0
-    minKeys: 0
   numpad:
     code: 0x24
-    repeat: 0
-    minKeys: 0
   utility:
     code: 0x18
-    repeat: 24
-    minKeys: 42
 presets: m800

@@ -4,11 +4,20 @@ from time import sleep
 import ctypes as ct
 import re
 from steelkeys.hidapi_types import set_hidapi_types
+import struct
 
 import binascii
 
-BLACK = [0, 0, 0]
 DELAY = 0.01
+
+BLACK = [0, 0, 0]
+LENGTH = 42
+EMPTY_FRAGMENT = [0x00] * 12
+CLOSING_FRAGMENT = [0x00] * 7
+
+EFFECT_DISABLE = [0x64, 0x00, 0x00, 0x01]
+EFFECT_REACTIVE = [0x00, 0x08]
+EFFECT_STEADY = [0x2c, 0x01, 0x00, 0x01]
 
 class ConfigError(Exception):
     pass
@@ -66,17 +75,27 @@ class Keyboard:
 	def disable(self): # {{{
 
 		regions = {}
+		solos = []
 
 		for key, value in self._layout['keys'].items():
 			region = value['region']
 
-			if not region in regions:
-				regions[region] = []
+			if 'solo' in value:
+				solos.append({
+					'region': region,
+					'data': [(value['keycode'], BLACK, BLACK, EFFECT_STEADY) for i in range(value['solo'])]
+				})
+			else:
+				if not region in regions:
+					regions[region] = []
 
-			regions[region].append((value['keycode'], BLACK))
+				regions[region].append((value['keycode'], BLACK, BLACK, EFFECT_DISABLE))
 
 		for region, data in regions.items():
 			self.__sendFeatureReport(self.__makePackets(region, data))
+
+		for solo in solos:
+			self.__sendFeatureReport(self.__makePackets(solo['region'], solo['data']))
 
 		self.refresh()
 	# }}}
@@ -97,33 +116,18 @@ class Keyboard:
 
 		packet = [0x0e, 0x00, self._layout['regions'][region]['code'], 0x00]
 
-		# prefix = self._layout['regions'][region]['prefix']
-
 		k = 0
-		for (keycode, rgb) in data:
+		for (keycode, active, rest, effect) in data:
 
-			#fragment = rgb + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, keycode]
-			fragment = rgb + [0x00, 0x00, 0x00, 0x2c, 0x01, 0x00, 0x01, 0x00, keycode]
+			fragment = active + rest + effect + [0x00, keycode]
 
 			packet += fragment
 
 			k += 1
 
-		repeat = self._layout['regions'][region]['repeat']
-		while k < repeat:
-			packet += fragment
-			k += 1
+		packet += EMPTY_FRAGMENT * (LENGTH - k)
 
-		minKeys = self._layout['regions'][region]['minKeys']
-		if k < minKeys:
-			fragment = [0x00] * 12
-
-			while k < minKeys:
-				packet += fragment
-				k += 1
-
-		packet += ([0x00] * 6)
-		#packet += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x39]
+		packet += CLOSING_FRAGMENT
 
 		#print(binascii.hexlify(bytearray(packet)))
 
@@ -133,18 +137,18 @@ class Keyboard:
 	def __makePackets(self, region, data): # {{{
 
 		l = len(data)
-		maxKeys = self._layout['maxKeys']
+		max = LENGTH
 
-		if l > maxKeys:
+		if l > LENGTH:
 			packets = []
 			i = 0
 
 			while i < l:
-				j = i + maxKeys - 1
+				j = i + LENGTH
 
 				packets.append(self.__makePacket(region, data[i:j]))
 
-				i += maxKeys
+				i += LENGTH
 
 			return packets
 		else:
@@ -182,36 +186,66 @@ class Keyboard:
 			raise HIDOpenError
 	# }}}
 
-	def __prepareGroup(self, name, data, regions): # {{{
+	def __prepareGroup(self, name, config, regions, solos): # {{{
 
 		for key in self._layout['groups'][name]:
-			self.__prepareKey(key, data, regions)
+			self.__prepareKey(key, config, regions, solos)
 	# }}}
 
-	def __prepareKey(self, keycode, data, regions): # {{{
+	def __prepareKey(self, keycode, config, regions, solos): # {{{
 
 		key = self._layout['keys'][keycode]
 
 		region = key['region']
 
-		if not region in regions:
-			regions[region] = []
+		if not 'fx' in config or config['fx'] == 'steady':
+			color = parseColor(config['color'])
 
-		regions[region].append((key['keycode'], parseColor(data['color'])))
+			data = (key['keycode'], color, BLACK, EFFECT_STEADY)
+
+		elif config['fx'] == 'disable':
+			data = (key['keycode'], BLACK, BLACK, EFFECT_STEADY)
+
+		elif config['fx'] == 'reactive':
+			active = parseColor(config['active'])
+			rest = parseColor(config['rest'])
+
+			speed = 300
+			if 'speed' in config:
+				speed = config['speed']
+
+			effect = list(struct.unpack('bb', struct.pack('<h', speed))) + EFFECT_REACTIVE
+
+			data = (key['keycode'], active, rest, effect)
+
+		if 'solo' in key:
+			solos.append({
+				'region': region,
+				'data': [data for i in range(key['solo'])]
+			})
+		else:
+			if not region in regions:
+				regions[region] = []
+
+			regions[region].append(data)
 	# }}}
 
 	def pushConfig(self, config): # {{{
 
 		regions = {}
+		solos = []
 
 		for key, data in config.items():
 			if key in self._layout['keys']:
-				self.__prepareKey(key, data, regions)
+				self.__prepareKey(key, data, regions, solos)
 			elif key in self._layout['groups']:
-				self.__prepareGroup(key, data, regions)
+				self.__prepareGroup(key, data, regions, solos)
 
 		for region, data in regions.items():
 			self.__sendFeatureReport(self.__makePackets(region, data))
+
+		for solo in solos:
+			self.__sendFeatureReport(self.__makePackets(solo['region'], solo['data']))
 
 		self.refresh()
 	# }}}

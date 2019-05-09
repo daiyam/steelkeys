@@ -44,7 +44,7 @@ Compatibility
 
 | Model                 | Code    | Effects                    |
 | --------------------- | ------- | -------------------------- |
-| SteelSeries Apex M800 | M800    | Steady, Reactive, Disabled |
+| SteelSeries Apex M800 | M800    | steady, reactive, disable  |
 
 Requirements
 ------------
