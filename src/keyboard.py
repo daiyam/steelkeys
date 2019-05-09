@@ -41,6 +41,9 @@ class UnknownPresetError(Exception):
 	pass
 
 def parseColor(color): # {{{
+	if not isinstance(color, str):
+		raise ConfigError('%s is not a string' % color)
+
 	# Color in HTML notation
 	if not re.fullmatch('^[0-9a-f]{6}$', color):
 		raise ConfigError('%s is not a valid color' % color)
@@ -186,6 +189,17 @@ class Keyboard:
 			raise HIDOpenError
 	# }}}
 
+	def __prepare(self, key, data, config, regions, solos): # {{{
+
+		if isinstance(data, str):
+			self.__prepare(key, config[data], config, regions, solos)
+		else:
+			if key in self._layout['keys']:
+				self.__prepareKey(key, data, regions, solos)
+			elif key in self._layout['groups']:
+				self.__prepareGroup(key, data, regions, solos)
+	# }}}
+
 	def __prepareGroup(self, name, config, regions, solos): # {{{
 
 		for key in self._layout['groups'][name]:
@@ -216,7 +230,7 @@ class Keyboard:
 
 			effect = list(struct.unpack('bb', struct.pack('<h', speed))) + EFFECT_REACTIVE
 
-			data = (key['keycode'], active, rest, effect)
+			data = (key['keycode'], rest, active, effect)
 
 		if 'solo' in key:
 			solos.append({
@@ -236,10 +250,7 @@ class Keyboard:
 		solos = []
 
 		for key, data in config.items():
-			if key in self._layout['keys']:
-				self.__prepareKey(key, data, regions, solos)
-			elif key in self._layout['groups']:
-				self.__prepareGroup(key, data, regions, solos)
+			self.__prepare(key, data, config, regions, solos)
 
 		for region, data in regions.items():
 			self.__sendFeatureReport(self.__makePackets(region, data))

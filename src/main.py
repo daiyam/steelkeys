@@ -3,6 +3,8 @@
 import argparse
 import json
 import sys
+import yaml
+
 from steelkeys.keyboard import Keyboard, ConfigError, HIDLibraryError, HIDNotFoundError, HIDOpenError, UnknownPresetError
 
 VERSION = "0.1"
@@ -84,22 +86,26 @@ def main():
 				try:
 					kb.pushConfig(json.loads(args.json))
 				except ConfigError as e:
-					print("Error in the json : %s" % str(e))
+					print("Error in the JSON : %s" % str(e))
 					sys.exit(1)
 
 			# If user has requested to load a config file
 			elif args.config:
-				print("Error reading config file")
-				# try:
-				# 	colors_map, warnings = load_config(args.config, msi_keymap)
-				# except ConfigError as e:
-				# 	print("Error reading config file : %s" % str(e))
-				# 	sys.exit(1)
-
-				# for w in warnings:
-				# 		print("Warning :", w)
-
-				# kb.set_colors(colors_map)
+				if args.config.endswith('.json'):
+					try:
+						kb.pushConfig(json.load(open(args.config)))
+					except ConfigError as e:
+						print("Error in the YAML : %s" % str(e))
+						sys.exit(1)
+				elif args.config.endswith('.yaml') or args.config.endswith('.yml'):
+					try:
+						kb.pushConfig(yaml.load(open(args.config)))
+					except ConfigError as e:
+						print("Error in the YAML : %s" % str(e))
+						sys.exit(1)
+				else:
+					print("Error reading config file")
+					sys.exit(1)
 
 			# If user has not requested anything
 			else:

@@ -54,8 +54,8 @@ Requirements
   * **Archlinux** : `# pacman -S python-setuptools`
   * **Ubuntu** : `# apt install python3-setuptools`
 * libhidapi 0.8+
-	* **Archlinux** : `# pacman -S hidapi`
-	* **Ubuntu** : `# apt install libhidapi-hidraw0`
+  * **Archlinux** : `# pacman -S hidapi`
+  * **Ubuntu** : `# apt install libhidapi-hidraw0`
 
 Permissions
 -----------
@@ -98,12 +98,68 @@ Configuration file
 
 The configuration can be either a JSON file or a YAML file.
 
+### JSON
 
+```json
+{
+  "all": {
+    "fx": "reactive",
+    "active": "ff0040",
+    "rest": "ffffff",
+    "speed": 300
+  },
+  "logo": {
+    "fx": "disable"
+  },
+  "m0": {
+    "fx": "reactive",
+    "active": "80ff20",
+    "rest": "0000ff",
+    "speed": 300
+  },
+  "m4": "m0",
+  "m5": "m0",
+  "m1": {
+    "fx": "reactive",
+    "active": "80ff20",
+    "rest": "ffff00",
+    "speed": 300
+  },
+  "m2": "m1",
+  "m3": "m1"
+}
+```
+
+### YAML
+
+```yaml
+all:
+  fx: reactive
+  active: ff0040
+  rest: ff0000
+  speed: 300
+logo:
+  fx: disable
+m0:
+  fx: reactive
+  active: 80ff20
+  rest: ff0040
+  speed: 300
+m4: m0
+m5: m0
+m1:
+  fx: reactive
+  active: 80ff20
+  rest: '404040'
+  speed: 300
+m2: m1
+m3: m1
+```
 
 Thanks
 ------
 
-I would like to thanks @Askannz for his project [msi-perkeyrgb](https://github.com/Askannz/msi-perkeyrgb) which this current project is based on.
+I would like to thanks [Robin Lange](https://github.com/Askannz) for his project [msi-perkeyrgb](https://github.com/Askannz/msi-perkeyrgb) which this current project is based on.
 
 License
 -------
